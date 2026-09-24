@@ -47,11 +47,6 @@ jobs:
       with:
         submodules: 'recursive'
   
-    - name: Extract branch name
-      shell: bash
-      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-      id: extract_branch
-        
     - name: Install prerequisites
       run: |
         sudo apt-get update
@@ -145,19 +140,6 @@ jobs:
         name: build-artifact-web-wasm
         path: ${{github.workspace}}/Ardens_web_wasm.zip
         
-    - name: Pre-Deploy
-      run: |
-        cp ${{github.workspace}}/src/live_Ardens.html ${{github.workspace}}/Ardens_web_wasm/index.html
-        cp ${{github.workspace}}/src/live_ArdensPlayer.html ${{github.workspace}}/Ardens_web_wasm/player.html
-        
-    - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        clean: false
-        token: ${{ secrets.GITHUB_TOKEN }}
-        folder: ${{github.workspace}}/Ardens_web_wasm
-        target-folder: staging/${{ steps.extract_branch.outputs.branch }}
-
   check_linux:
   
     name: Build (Linux)
